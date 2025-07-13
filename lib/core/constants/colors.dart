@@ -73,39 +73,15 @@ class AppColors {
     colors: [gradientStart, gradientEnd],
   );
 
-  static LinearGradient primaryGradientWithOpacity(double opacity) {
-    return LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        gradientStart.withAlpha((255 * opacity).round()),
-        gradientEnd.withAlpha((255 * opacity).round()),
-      ],
-    );
-  }
-
-  static const LinearGradient multiColorGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xff667eea), Color(0xff764ba2), Color(0xff4684e7)],
-    stops: [0.0, 0.5, 1.0],
-  );
-
-  static const LinearGradient sunsetGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [Color(0xffFF9A8B), Color(0xffF5A623), Color(0xffFF5722)],
-  );
-
-  static const LinearGradient oceanGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xff1e3c72), Color(0xff2a5298)],
-  );
-
   static const LinearGradient darkTealGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
+    colors: [Color(0xFF0f3460), Color(0xFF1e6091), Color(0xFF58a4b0)],
+  );
+  
+  static const LinearGradient darkTealGradientRow = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
     colors: [Color(0xFF0f3460), Color(0xFF1e6091), Color(0xFF58a4b0)],
   );
 }
