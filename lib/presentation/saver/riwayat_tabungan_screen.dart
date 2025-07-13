@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hwait_apps/core/components/components.dart';
 import 'package:hwait_apps/core/extensions/build_context_ext.dart';
 import 'package:hwait_apps/presentation/saver/bloc/riwayatTabungan/riwayat_tabungan_bloc.dart';
 import 'package:hwait_apps/core/constants/colors.dart';
@@ -25,6 +26,13 @@ class _RiwayatTabunganScreenState extends State<RiwayatTabunganScreen> {
 
   IconData _getStatusIcon(String? status) {
     return Icons.check_circle;
+  }
+
+  int parseAmount(dynamic value) {
+    return int.tryParse(
+          double.tryParse(value?.toString() ?? '0')?.toStringAsFixed(0) ?? '0',
+        ) ??
+        0;
   }
 
   @override
@@ -115,6 +123,11 @@ class _RiwayatTabunganScreenState extends State<RiwayatTabunganScreen> {
                   final item = state.riwayat[index];
                   final statusColor = _getStatusColor(item.status);
                   final statusIcon = _getStatusIcon(item.status);
+                  final total =
+                      parseAmount(item.ticket) +
+                      parseAmount(item.food) +
+                      parseAmount(item.transport) +
+                      parseAmount(item.others);
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 12),
@@ -184,6 +197,13 @@ class _RiwayatTabunganScreenState extends State<RiwayatTabunganScreen> {
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  Text(
+                                    'Total Tabungan ${formatCurrency(total)}',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
                                 ],
                               ),
