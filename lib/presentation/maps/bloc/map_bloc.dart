@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:meta/meta.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';
@@ -33,7 +31,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           zoom: 16,
         );
 
-        final placemarks = await placemarkFromCoordinates(pos.latitude, pos.longitude);
+        final placemarks = await placemarkFromCoordinates(
+          pos.latitude,
+          pos.longitude,
+        );
         final p = placemarks.first;
         final currentAddress = '${p.name}, ${p.locality}, ${p.country}';
 
@@ -43,14 +44,20 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         ));
       } catch (e) {
         emit((state as MapsReady).copyWith(
-          initialCamera: const CameraPosition(target: LatLng(0, 0), zoom: 2),
+          initialCamera: const CameraPosition(
+            target: LatLng(0, 0),
+            zoom: 2,
+          ),
         ));
       }
     });
 
     on<PickLocation>((event, emit) async {
       final latlng = event.latLng;
-      final placemarks = await placemarkFromCoordinates(latlng.latitude, latlng.longitude);
+      final placemarks = await placemarkFromCoordinates(
+        latlng.latitude,
+        latlng.longitude,
+      );
       final p = placemarks.first;
 
       final marker = Marker(
@@ -62,18 +69,27 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         ),
       );
 
-      final address = '${p.name}, ${p.street}, ${p.locality}, ${p.country}, ${p.postalCode}';
+      final address =
+          '${p.name}, ${p.street}, ${p.locality}, ${p.country}, ${p.postalCode}';
 
       emit((state as MapsReady).copyWith(
         pickedMarker: marker,
-        pickedAddress: address,
+        pickedLocation: LocationData(
+          address: address,
+          latitude: latlng.latitude,
+          longitude: latlng.longitude,
+        ),
+        updatePickedMarker: true,
+        updatePickedLocation: true,
       ));
     });
 
     on<ClearPickedLocation>((event, emit) {
       emit((state as MapsReady).copyWith(
         pickedMarker: null,
-        pickedAddress: null,
+        pickedLocation: null,
+        updatePickedMarker: true,
+        updatePickedLocation: true,
       ));
     });
   }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hwait_apps/presentation/maps/bloc/map_bloc.dart';
+import 'bloc/map_bloc.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -21,13 +21,23 @@ class _MapScreenState extends State<MapScreen> {
     context.read<MapBloc>().add(LoadCurrentLocation());
   }
 
-  void _confirmSelection(String address) {
+  void _confirmSelection(BuildContext context, MapsReady state) {
+    if (state.pickedMarker == null || state.pickedLocation == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Silakan pilih lokasi terlebih dahulu."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
             title: const Text('Konfirmasi Alamat'),
-            content: Text(address),
+            content: Text(state.pickedLocation!.address),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -36,7 +46,11 @@ class _MapScreenState extends State<MapScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pop(context, address);
+                  Navigator.pop(context, {
+                    'location_name': state.pickedLocation!.address,
+                    'latitude': state.pickedLocation!.latitude,
+                    'longitude': state.pickedLocation!.longitude,
+                  });
                 },
                 child: const Text('Pilih'),
               ),
@@ -61,7 +75,8 @@ class _MapScreenState extends State<MapScreen> {
                 initialCameraPosition: state.initialCamera!,
                 myLocationEnabled: true,
                 myLocationButtonEnabled: true,
-                markers: state.pickedMarker != null ? {state.pickedMarker!} : {},
+                markers:
+                    state.pickedMarker != null ? {state.pickedMarker!} : {},
                 onMapCreated: (controller) => _controller.complete(controller),
                 onTap: (latlng) {
                   context.read<MapBloc>().add(PickLocation(latlng));
@@ -80,7 +95,7 @@ class _MapScreenState extends State<MapScreen> {
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 4,
-                        offset: Offset(0, 2)
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),
@@ -88,9 +103,9 @@ class _MapScreenState extends State<MapScreen> {
                     state.currentAddress ?? 'Mencari Lokasi...',
                     style: const TextStyle(fontSize: 14),
                   ),
-                )
+                ),
               ),
-              if (state.pickedAddress != null)
+              if (state.pickedLocation != null)
                 Positioned(
                   bottom: 120,
                   left: 16,
@@ -100,19 +115,19 @@ class _MapScreenState extends State<MapScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
-                        state.pickedAddress!,
+                        state.pickedLocation!.address,
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
-                  )
-                )
+                  ),
+                ),
             ],
           );
         },
       ),
       floatingActionButton: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
-          if (state is! MapsReady || state.pickedAddress == null) {
+          if (state is! MapsReady || state.pickedLocation == null) {
             return const SizedBox.shrink();
           }
 
@@ -122,20 +137,21 @@ class _MapScreenState extends State<MapScreen> {
             children: [
               FloatingActionButton.extended(
                 heroTag: 'confirm',
-                onPressed: () => _confirmSelection(state.pickedAddress!),
-                label: const Text('Pilihan Alamat'),
+                onPressed: () => _confirmSelection(context, state),
+                label: const Text('Pilih Lokasi'),
                 icon: const Icon(Icons.check),
               ),
-              const SizedBox(height: 8,),
+              const SizedBox(height: 8),
               FloatingActionButton.extended(
                 heroTag: 'clear',
-                onPressed: () => context.read<MapBloc>().add(ClearPickedLocation()),
+                onPressed:
+                    () => context.read<MapBloc>().add(ClearPickedLocation()),
                 label: const Text('Hapus Marker'),
                 icon: const Icon(Icons.clear),
               ),
             ],
           );
-        }
+        },
       ),
     );
   }
