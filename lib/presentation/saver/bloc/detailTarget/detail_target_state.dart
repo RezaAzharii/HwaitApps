@@ -25,3 +25,16 @@ class DetailTargetError extends DetailTargetState {
 
   DetailTargetError(this.message);
 }
+
+
+class DeleteTargetLoading extends DetailTargetState {}
+
+class DeleteTargetSuccess extends DetailTargetState {
+  final String message;
+  DeleteTargetSuccess(this.message);
+}
+
+class DeleteTargetError extends DetailTargetState {
+  final String message;
+  DeleteTargetError(this.message);
+}

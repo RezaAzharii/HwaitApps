@@ -8,3 +8,8 @@ class FetchDetailTarget extends DetailTargetEvent {
   FetchDetailTarget(this.id);
 }
 
+class DeleteTarget extends DetailTargetEvent {
+  final int id;
+
+  DeleteTarget(this.id);
+}

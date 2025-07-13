@@ -82,4 +82,22 @@ class TargetRepository {
       return Left('$e');
     }
   }
+
+  Future<Either<String, String>> deleteTarget(int id) async {
+    try {
+      final response = await httpClient.deleteWithToken('targets/$id');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Right(data['message'] ?? 'Berhasil dihapus');
+      } else {
+        final data = jsonDecode(response.body);
+        return Left(data['message'] ?? 'Gagal menghapus Target');
+      }
+    } catch (e) {
+      return const Left('Terjadi kesalahan saat menghapus data');
+    }
+  }
 }
+
+

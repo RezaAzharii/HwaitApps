@@ -1,12 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hwait_apps/core/core.dart';
+import 'package:hwait_apps/presentation/saver/bloc/detailTarget/detail_target_bloc.dart';
 
 class ImageHeader extends StatelessWidget {
   final String? imagePath;
   final String? title;
+  final int targetId;
 
-  const ImageHeader(this.imagePath, this.title);
+  const ImageHeader(this.imagePath, this.title, this.targetId, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class ImageHeader extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            child: _ImageOverlay(title ?? 'Tanpa Judul'),
+            child: _ImageOverlay(title ?? 'Tanpa Judul', targetId),
           ),
         ],
       ),
@@ -51,8 +55,9 @@ class ImageHeader extends StatelessWidget {
 
 class _ImageOverlay extends StatelessWidget {
   final String title;
+  final int id;
 
-  const _ImageOverlay(this.title);
+  const _ImageOverlay(this.title, this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -66,15 +71,34 @@ class _ImageOverlay extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           color: Colors.white.withOpacity(0.1),
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 12),
+              IconButton(
+                onPressed: () {
+                  showDeleteConfirmationDialog(
+                    context,
+                    onConfirm: () {
+                      context.read<DetailTargetBloc>().add(DeleteTarget(id));
+                    },
+                  );
+                },
+                icon: const Icon(Icons.delete, color: Colors.redAccent),
+              ),
+            ],
           ),
         ),
       ),

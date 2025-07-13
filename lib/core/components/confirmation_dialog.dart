@@ -9,7 +9,7 @@ void showDeleteConfirmationDialog(
     builder: (_) => AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title: const Text('Konfirmasi'),
-      content: const Text('Yakin ingin menghapus rekomendasi ini?'),
+      content: const Text('Yakin ingin menghapus Data ini?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
