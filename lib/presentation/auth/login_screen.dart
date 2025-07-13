@@ -9,7 +9,7 @@ import 'package:hwait_apps/data/model/request/auth/login_request_model.dart';
 import 'package:hwait_apps/presentation/admin/admin_screen.dart';
 import 'package:hwait_apps/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:hwait_apps/presentation/auth/register_screen.dart';
-import 'package:hwait_apps/presentation/home_screen.dart';
+import 'package:hwait_apps/presentation/saver/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -167,13 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: 'Belum memiliki akun? Silahkan ',
                         style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                          color: Colors.white,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                         ),
                         children: [
                           TextSpan(
                             text: 'Daftar disini!',
-                            style: TextStyle(color: AppColors.primary),
+                            style: TextStyle(color: Colors.white60),
                             recognizer:
                                 TapGestureRecognizer()
                                   ..onTap = () {
